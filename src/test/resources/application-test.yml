@@ -1,0 +1,31 @@
+axon:
+  serializer:
+    events: jackson
+    general: jackson
+    messages: jackson
+  amqp:
+    exchange: events
+  error:
+    include-binding-errors: always
+    include-message: always
+spring:
+  application:
+    name: auction-cmd-service
+  datasource:
+    url: 'jdbc:h2:mem:auctiondb;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=10'
+    username: root
+    password: root
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration   
+eauction:
+  rabbitmq:
+    queue: events

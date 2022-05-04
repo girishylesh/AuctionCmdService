@@ -1,0 +1,32 @@
+axon:
+  serializer:
+    events: jackson
+    general: jackson
+    messages: jackson
+  amqp:
+    exchange: events
+server:
+  error:
+    include-binding-errors: always
+    include-message: always
+spring:
+  application:
+    name: auction-cmd-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/auctiondb
+    username: admin
+    password: admin123
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    
+eauction:
+  rabbitmq:
+    queue: events
