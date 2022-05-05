@@ -44,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/e-auction/api/v1")
+@RequestMapping(value = "/e-auction/api/v1/cmd")
 public class AuctionCommandController {
 
 	@Autowired
