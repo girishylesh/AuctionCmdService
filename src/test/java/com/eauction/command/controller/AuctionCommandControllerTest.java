@@ -109,7 +109,7 @@ class AuctionCommandControllerTest {
 	@Test
 	void addUserBadRequestTest() throws Exception {
 		AuctionUserRequest auctionUserRequest = new AuctionUserRequest();
-		mockMvc.perform(post("/e-auction/api/v1/add-user")
+		mockMvc.perform(post("/e-auction/api/v1/cmd/add-user")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(auctionUserRequest)))
 	            .andExpect(status().isBadRequest());
@@ -120,7 +120,7 @@ class AuctionCommandControllerTest {
 		AuctionUserRequest auctionUserSeller = new AuctionUserRequest();
 		BeanUtils.copyProperties(seller, auctionUserSeller);
 		auctionUserSeller.setEmail(UUID.randomUUID().toString() + "@email.com");
-		mockMvc.perform(post("/e-auction/api/v1/add-user")
+		mockMvc.perform(post("/e-auction/api/v1/cmd/add-user")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(auctionUserSeller)))
 	            .andExpect(status().isCreated());
@@ -131,7 +131,7 @@ class AuctionCommandControllerTest {
 		ProductRequest newProduct = new ProductRequest();
 		BeanUtils.copyProperties(product, newProduct);
 		newProduct.setUserId(111L);
-		mockMvc.perform(post("/e-auction/api/v1/seller/add-product")
+		mockMvc.perform(post("/e-auction/api/v1/cmd/seller/add-product")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(newProduct)))
 	            .andExpect(status().isNotFound());
@@ -143,7 +143,7 @@ class AuctionCommandControllerTest {
 		BeanUtils.copyProperties(product, newProduct);
 		newProduct.setName("New product 1");
 		newProduct.setUserId(1L);
-		mockMvc.perform(post("/e-auction/api/v1/seller/add-product")
+		mockMvc.perform(post("/e-auction/api/v1/cmd/seller/add-product")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(product)))
 	            .andExpect(status().isCreated());
@@ -151,7 +151,7 @@ class AuctionCommandControllerTest {
 	
 	@Test
 	void deleteProductTest() throws Exception {		
-		mockMvc.perform(delete("/e-auction/api/v1/seller/delete/2")
+		mockMvc.perform(delete("/e-auction/api/v1/cmd/seller/delete/2")
 	            .contentType("application/json"))
 	            .andExpect(status().isOk());
 	}
@@ -163,7 +163,7 @@ class AuctionCommandControllerTest {
 		bidRequest.setProductId(1L);
 		bidRequest.setUserId(2L);
 		
-		mockMvc.perform(post("/e-auction/api/v1/buyer/place-bid")
+		mockMvc.perform(post("/e-auction/api/v1/cmd/buyer/place-bid")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(bidRequest)))
 	            .andExpect(status().isCreated());
@@ -182,7 +182,7 @@ class AuctionCommandControllerTest {
 		newBid.setProduct(oldProduct);
 		newBid.setBidAmount(888.0);
 		bidRepository.save(newBid);
-		mockMvc.perform(put("/e-auction/api/v1/buyer/update-bid/1/buyerupdate@email.com/234")
+		mockMvc.perform(put("/e-auction/api/v1/cmd/buyer/update-bid/1/buyerupdate@email.com/234")
 	            .contentType("application/json"))
 	            .andExpect(status().isOk());
 	}

@@ -26,6 +26,12 @@ spring:
     show-sql: false
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration   
+
 eauction:
   rabbitmq:
     queue: events
+
+eureka:
+   client:
+      registerWithEureka: false
+      fetchRegistry: false
