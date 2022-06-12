@@ -14,8 +14,8 @@ public class AuctionUserService {
 	@Autowired
 	private AuctionUserRepository auctionUserRepository;
 	
-	public Optional<AuctionUser> getAuctionUserById(Long userId) {
-		return auctionUserRepository.findById(userId);
+	public Optional<AuctionUser> getAuctionUserByUid(String userId) {
+		return auctionUserRepository.findByUid(userId);
 	}
 	
 	public Optional<AuctionUser> getAuctionUserByEmail(String email) {

@@ -9,5 +9,5 @@ import com.eauction.entity.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	public Optional<Product> findByNameAndAuctionUserUserId(String name, Long userId);
+	public Optional<Product> findByNameAndAuctionUserUid(String name, String uid);
 }

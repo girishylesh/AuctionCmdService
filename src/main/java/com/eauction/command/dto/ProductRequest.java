@@ -27,5 +27,5 @@ public class ProductRequest {
 	private Category category;
 	@Future(message = "Bid end date must be future date")
 	private LocalDate bidEndDate;
-	private Long userId;
+	private String uid;
 }

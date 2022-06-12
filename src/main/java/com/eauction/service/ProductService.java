@@ -18,7 +18,7 @@ public class ProductService {
 		return productRepository.findById(productId);
 	}
 	
-	public Optional<Product> getProductByNameAndUser(String name, Long userId) {
-		return productRepository.findByNameAndAuctionUserUserId(name, userId);
+	public Optional<Product> getProductByNameAndUser(String name, String uid) {
+		return productRepository.findByNameAndAuctionUserUid(name, uid);
 	}
 }

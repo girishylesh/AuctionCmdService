@@ -20,5 +20,5 @@ public class BidRequest {
 	private Long productId;
 	@NotNull(message = "Product id is required")
 	@Min(message="Must be number greater than or equal to 1", value = 1)
-	private Long userId;
+	private String uid;
 }

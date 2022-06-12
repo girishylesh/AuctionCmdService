@@ -80,7 +80,7 @@ public class AuctionCommandController {
 					.userType(auctionUserRequest.getUserType())
 					.status(Event.CREATE)
 					.build();
-			return new ResponseEntity<>(commandGateway.sendAndWait(seller).toString(), HttpStatus.CREATED);
+			return new ResponseEntity<>(commandGateway.sendAndWait(seller).toString(), HttpStatus.OK);
 		} catch (Exception ex) {
 			log.error("Error creating user: {}", ex);
 			return new ResponseEntity<>("Error creating user", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,11 +90,11 @@ public class AuctionCommandController {
 	@PostMapping("/seller/add-product")
 	public ResponseEntity<String> createProduct(@Valid @RequestBody ProductRequest productRequest) {
 		
-		Optional<AuctionUser> auctionUser = auctionUserService.getAuctionUserById(productRequest.getUserId());
+		Optional<AuctionUser> auctionUser = auctionUserService.getAuctionUserByUid(productRequest.getUid());
 		if(!auctionUser.isPresent() || !UserType.SELLER.equals(auctionUser.get().getUserType())) {
 			throw new UserNotFoundException("Invalid user.");
 		} 
-		else if(productService.getProductByNameAndUser(productRequest.getName(), productRequest.getUserId()).isPresent()) {
+		else if(productService.getProductByNameAndUser(productRequest.getName(), productRequest.getUid()).isPresent()) {
 			throw new ProductExistsException("Product exists");
 		} 
 		
@@ -110,7 +110,7 @@ public class AuctionCommandController {
 					.auctionUser(auctionUser.get())
 					.status(Event.CREATE)
 					.build();
-			return new ResponseEntity<>(commandGateway.sendAndWait(product).toString(), HttpStatus.CREATED);
+			return new ResponseEntity<>(commandGateway.sendAndWait(product).toString(), HttpStatus.OK);
 		} catch (Exception ex) {
 			log.error("Error creating product: {}", ex);
 			return new ResponseEntity<>("Error creating product", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -145,7 +145,7 @@ public class AuctionCommandController {
 	
 	@PostMapping("/buyer/place-bid")
 	public ResponseEntity<String> placeBid(@Valid @RequestBody BidRequest bidRequest) {
-		Optional<AuctionUser> auctionUser = auctionUserService.getAuctionUserById(bidRequest.getUserId());
+		Optional<AuctionUser> auctionUser = auctionUserService.getAuctionUserByUid(bidRequest.getUid());
 		if(!auctionUser.isPresent() || !UserType.BUYER.equals(auctionUser.get().getUserType())) {
 			throw new UserNotFoundException("Invalid user");
 		}
@@ -170,7 +170,7 @@ public class AuctionCommandController {
 					.auctionUser(auctionUser.get())
 					.bidAmount(bidRequest.getBidAmount())
 					.build();
-			return new ResponseEntity<>(commandGateway.sendAndWait(createBid).toString(), HttpStatus.CREATED);
+			return new ResponseEntity<>(commandGateway.sendAndWait(createBid).toString(), HttpStatus.OK);
 		} catch (Exception ex) {
 			log.error("Error placing bid: {}", ex);
 			return new ResponseEntity<>("Error placing bid", HttpStatus.INTERNAL_SERVER_ERROR);

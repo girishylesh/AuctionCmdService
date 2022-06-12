@@ -89,7 +89,7 @@ class AuctionCommandControllerTest {
 		product.setCategory(Category.PAINTING);
 		product.setStartingPrice("200");
 		product.setBidEndDate(LocalDate.now().plusDays(7));
-		product.setUserId(1L);
+		product.setUid("1");
 		
 		AuctionUser auctionUserSeller =  new AuctionUser();
 		BeanUtils.copyProperties(seller, auctionUserSeller);
@@ -130,7 +130,7 @@ class AuctionCommandControllerTest {
 	void productNotFoundTest() throws Exception {
 		ProductRequest newProduct = new ProductRequest();
 		BeanUtils.copyProperties(product, newProduct);
-		newProduct.setUserId(111L);
+		newProduct.setUid("111");
 		mockMvc.perform(post("/e-auction/api/v1/cmd/seller/add-product")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(newProduct)))
@@ -142,7 +142,7 @@ class AuctionCommandControllerTest {
 		ProductRequest newProduct = new ProductRequest();
 		BeanUtils.copyProperties(product, newProduct);
 		newProduct.setName("New product 1");
-		newProduct.setUserId(1L);
+		newProduct.setUid("1");
 		mockMvc.perform(post("/e-auction/api/v1/cmd/seller/add-product")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(product)))
@@ -161,7 +161,7 @@ class AuctionCommandControllerTest {
 		BidRequest bidRequest = new BidRequest();
 		bidRequest.setBidAmount(500.0);
 		bidRequest.setProductId(1L);
-		bidRequest.setUserId(2L);
+		bidRequest.setUid("2");
 		
 		mockMvc.perform(post("/e-auction/api/v1/cmd/buyer/place-bid")
 	            .contentType("application/json")

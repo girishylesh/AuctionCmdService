@@ -10,4 +10,5 @@ import com.eauction.entity.AuctionUser;
 @Repository
 public interface AuctionUserRepository extends JpaRepository<AuctionUser, Long> {
 	public Optional<AuctionUser> findByEmail(String email);
+	public Optional<AuctionUser> findByUid(String uid);
 }
