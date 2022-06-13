@@ -118,14 +118,14 @@ public class AuctionCommandController {
 	}
 	
 	@DeleteMapping("/seller/delete/{productId}")
-	public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+	public ResponseEntity<String> deleteProduct(@PathVariable String productId) {
 	    	
-		Optional<Product> product = productService.getProductById(productId);
+		Optional<Product> product = productService.getProductByUid(productId);
 		if(!product.isPresent()) {
 			throw new ProductNotFoundException("Product not found.");
 		} else if(LocalDate.now().isAfter(product.get().getBidEndDate())) {
 				throw new BidException("Bid is closed. Cannot perorm this operation.");
-		} else if(bidService.getBidCountByProductId(product.get().getProductId()) > 0) {
+		} else if(bidService.getBidCountByProductUid(product.get().getUid()) > 0) {
 			throw new BidException("Bid exists for this product. Cannot perorm this operation.");
 		}
 		
@@ -133,7 +133,6 @@ public class AuctionCommandController {
 			DeleteProductCommand deleteProduct = DeleteProductCommand.builder()
 					.aggId(UUID.randomUUID().toString())
 					.uid(product.get().getUid())
-					.productId(productId)
 					.build();
 			return new ResponseEntity<>(commandGateway.sendAndWait(deleteProduct).toString(), HttpStatus.OK);
 			
@@ -145,17 +144,17 @@ public class AuctionCommandController {
 	
 	@PostMapping("/buyer/place-bid")
 	public ResponseEntity<String> placeBid(@Valid @RequestBody BidRequest bidRequest) {
-		Optional<AuctionUser> auctionUser = auctionUserService.getAuctionUserByUid(bidRequest.getUid());
+		Optional<AuctionUser> auctionUser = auctionUserService.getAuctionUserByUid(bidRequest.getUserUid());
 		if(!auctionUser.isPresent() || !UserType.BUYER.equals(auctionUser.get().getUserType())) {
 			throw new UserNotFoundException("Invalid user");
 		}
 			
-		Optional<Bid> bid = bidService.getBidByProductAndAuctionUser(bidRequest.getProductId(), auctionUser.get().getUserId());
+		Optional<Bid> bid = bidService.getBidByProductAndAuctionUser(bidRequest.getProductUid(), auctionUser.get().getUid());
 		if(bid.isPresent()) {
 			throw new BidException("Bid already placed. Please update existing bid if required");
 		}
 			
-		Optional<Product> product = productService.getProductById(bidRequest.getProductId());
+		Optional<Product> product = productService.getProductByUid(bidRequest.getProductUid());
 		if(!product.isPresent()) {
 			throw new ProductNotFoundException("Product not found");
 		}  
@@ -177,22 +176,22 @@ public class AuctionCommandController {
 		}
 	}
 	
-	@PutMapping("/buyer/update-bid/{productId}/{buyerEmailId}/{newBidAmount}")
-	public ResponseEntity<String> updateBid(@PathVariable Long productId, @PathVariable String buyerEmailId, 
+	@PutMapping("/buyer/update-bid/{productUid}/{buyerEmailId}/{newBidAmount}")
+	public ResponseEntity<String> updateBid(@PathVariable String productUid, @PathVariable String buyerEmailId, 
 			@PathVariable Double newBidAmount) {
 		
 		Optional<AuctionUser> auctionUser = auctionUserService.getAuctionUserByEmail(buyerEmailId);
 		if(!auctionUser.isPresent() || !UserType.BUYER.equals(auctionUser.get().getUserType())) {
 			throw new UserNotFoundException("Buyer not found");
 		}
-		Optional<Product> product = productService.getProductById(productId);
+		Optional<Product> product = productService.getProductByUid(productUid);
 		if(!product.isPresent()) {
 			throw new ProductNotFoundException("Product not found");
 		} 
 		else if(LocalDate.now().isAfter(product.get().getBidEndDate())) {
 			throw new BidException("Bid closed");
 		}
-		Optional<Bid> bid = bidService.getBidByProductAndAuctionUser(productId, auctionUser.get().getUserId());
+		Optional<Bid> bid = bidService.getBidByProductAndAuctionUser(productUid, auctionUser.get().getUid());
 		if(!bid.isPresent()) {
 			throw new BidException("Bid does not exist");
 		}

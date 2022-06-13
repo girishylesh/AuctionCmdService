@@ -10,4 +10,5 @@ import com.eauction.entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 	public Optional<Product> findByNameAndAuctionUserUid(String name, String uid);
+	public Optional<Product> findByUid(String uid);
 }

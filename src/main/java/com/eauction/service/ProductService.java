@@ -14,8 +14,8 @@ public class ProductService {
 	@Autowired
 	private ProductRepository productRepository;
 	
-	public Optional<Product> getProductById(Long productId) {
-		return productRepository.findById(productId);
+	public Optional<Product> getProductByUid(String productUid) {
+		return productRepository.findByUid(productUid);
 	}
 	
 	public Optional<Product> getProductByNameAndUser(String name, String uid) {

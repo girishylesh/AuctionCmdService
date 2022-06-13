@@ -15,5 +15,4 @@ public class DeleteProductCommand {
 	@TargetAggregateIdentifier
 	private final String aggId;
 	private final String uid;
-    private final Long productId;
 }

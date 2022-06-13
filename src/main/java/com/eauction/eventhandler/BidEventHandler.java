@@ -27,8 +27,8 @@ public class BidEventHandler {
 	
 	@EventHandler
 	public void bidUpdatedEvent(BidUpdatedEvent bidUpdatedEvent) {
-		Optional<Bid> bid = bidRepository.findByProductProductIdAndAuctionUserUserId(bidUpdatedEvent.getProduct().getProductId(),
-				bidUpdatedEvent.getAuctionUser().getUserId());
+		Optional<Bid> bid = bidRepository.findByProductUidAndAuctionUserUid(bidUpdatedEvent.getProduct().getUid(),
+				bidUpdatedEvent.getAuctionUser().getUid());
 		if(bid.isPresent()) {
 			Bid updateBid = bid.get();
 			updateBid.setBidAmount(bidUpdatedEvent.getBidAmount());

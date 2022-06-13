@@ -8,8 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@TestInstance(Lifecycle.PER_CLASS)
 class AuctionCommandControllerTest {
 
 	@Autowired
@@ -56,9 +59,8 @@ class AuctionCommandControllerTest {
 	private AuctionUserRequest seller;
 	private AuctionUserRequest buyer;
 	private ProductRequest product;
-
 	
-	@BeforeEach
+	@BeforeAll
 	void init() {
 		seller = new AuctionUserRequest();
 		seller.setFirstName("sname1");
@@ -89,13 +91,15 @@ class AuctionCommandControllerTest {
 		product.setCategory(Category.PAINTING);
 		product.setStartingPrice("200");
 		product.setBidEndDate(LocalDate.now().plusDays(7));
-		product.setUid("1");
+		product.setUid("PUID1");
 		
 		AuctionUser auctionUserSeller =  new AuctionUser();
 		BeanUtils.copyProperties(seller, auctionUserSeller);
+		auctionUserSeller.setUid("UUID1");
 		auctionUserRepository.save(auctionUserSeller);
 		AuctionUser auctionUserBuyer =  new AuctionUser();
 		BeanUtils.copyProperties(buyer, auctionUserBuyer);
+		auctionUserBuyer.setUid("UUID2");
 		auctionUserRepository.save(auctionUserBuyer);
 		Product initProduct = new Product();
 		BeanUtils.copyProperties(product, initProduct);
@@ -103,6 +107,7 @@ class AuctionCommandControllerTest {
 		Product initProduct2 = new Product();
 		BeanUtils.copyProperties(product, initProduct2);
 		initProduct2.setName("product2");
+		initProduct2.setUid("PUID2");
 		productRepository.save(initProduct2);
 	}
 	
@@ -123,7 +128,7 @@ class AuctionCommandControllerTest {
 		mockMvc.perform(post("/e-auction/api/v1/cmd/add-user")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(auctionUserSeller)))
-	            .andExpect(status().isCreated());
+	            .andExpect(status().isOk());
 	}
 	
 	@Test
@@ -138,20 +143,20 @@ class AuctionCommandControllerTest {
 	}
 	
 	@Test
-	void addProductTest() throws Exception {	
+	void addProductTest() throws Exception {
 		ProductRequest newProduct = new ProductRequest();
 		BeanUtils.copyProperties(product, newProduct);
 		newProduct.setName("New product 1");
-		newProduct.setUid("1");
+		newProduct.setUid("UUID1");
 		mockMvc.perform(post("/e-auction/api/v1/cmd/seller/add-product")
 	            .contentType("application/json")
-	            .content(objectMapper.writeValueAsString(product)))
-	            .andExpect(status().isCreated());
+	            .content(objectMapper.writeValueAsString(newProduct)))
+	            .andExpect(status().isOk());
 	}
 	
 	@Test
 	void deleteProductTest() throws Exception {		
-		mockMvc.perform(delete("/e-auction/api/v1/cmd/seller/delete/2")
+		mockMvc.perform(delete("/e-auction/api/v1/cmd/seller/delete/PUID2")
 	            .contentType("application/json"))
 	            .andExpect(status().isOk());
 	}
@@ -160,13 +165,13 @@ class AuctionCommandControllerTest {
 	void placeBidTest() throws Exception {	
 		BidRequest bidRequest = new BidRequest();
 		bidRequest.setBidAmount(500.0);
-		bidRequest.setProductId(1L);
-		bidRequest.setUid("2");
+		bidRequest.setProductUid("PUID1");
+		bidRequest.setUserUid("UUID2");
 		
 		mockMvc.perform(post("/e-auction/api/v1/cmd/buyer/place-bid")
 	            .contentType("application/json")
 	            .content(objectMapper.writeValueAsString(bidRequest)))
-	            .andExpect(status().isCreated());
+	            .andExpect(status().isOk());
 	}
 	
 	@Test
@@ -182,7 +187,7 @@ class AuctionCommandControllerTest {
 		newBid.setProduct(oldProduct);
 		newBid.setBidAmount(888.0);
 		bidRepository.save(newBid);
-		mockMvc.perform(put("/e-auction/api/v1/cmd/buyer/update-bid/1/buyerupdate@email.com/234")
+		mockMvc.perform(put("/e-auction/api/v1/cmd/buyer/update-bid/PUID1/buyerupdate@email.com/234")
 	            .contentType("application/json"))
 	            .andExpect(status().isOk());
 	}
