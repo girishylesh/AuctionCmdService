@@ -62,6 +62,6 @@ public class ProductAggregate {
 	@EventSourcingHandler
 	public void on(ProductDeletedEvent productDeletedEvent) {
 		this.uid = productDeletedEvent.getAggId();
-		log.info("{} : {}", ProductDeletedEvent.class.getSimpleName(), productDeletedEvent.getProductId());
+		log.info("{} : {}", ProductDeletedEvent.class.getSimpleName(), productDeletedEvent.getProductUid());
 	}
 }

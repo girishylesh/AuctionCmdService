@@ -12,5 +12,5 @@ import lombok.Setter;
 public class ProductDeletedEvent {
 	private String aggId;
 	private String uid;
-	private Long productId;
+	private String productUid;
 }

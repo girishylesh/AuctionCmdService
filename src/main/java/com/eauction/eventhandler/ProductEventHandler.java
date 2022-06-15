@@ -25,6 +25,6 @@ public class ProductEventHandler {
 	
 	@EventHandler
 	public void productDeletedEvent(ProductDeletedEvent productDeletedEvent) {
-		productRepository.deleteById(productDeletedEvent.getProductId());
+		productRepository.deleteByUid(productDeletedEvent.getProductUid());
 	}
 }
