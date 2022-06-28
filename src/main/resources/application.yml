@@ -4,36 +4,37 @@ axon:
     general: jackson
     messages: jackson
   amqp:
-    exchange: events
+    exchange: ${RABBITMQ_EXCHANGE:events}
 server:
   error:
     include-binding-errors: always
     include-message: always
+  port: ${SERVER_PORT:8080}
 spring:
   application:
     name: auction-cmd-service
   datasource:
-    url: jdbc:mysql://localhost:3306/auctiondb
-    username: admin
-    password: admin123
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/auctiondb}
+    username: ${MYSQL_USERNAME:admin}
+    password: ${MYSQL_PASSWORD:admin123}
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: update
     show-sql: false
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
     
 eauction:
   rabbitmq:
     queue: events
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-  instance:
-    preferIpAddress: true
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+#  instance:
+#    preferIpAddress: true
