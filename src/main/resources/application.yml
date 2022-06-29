@@ -18,7 +18,7 @@ spring:
     username: ${MYSQL_USERNAME:admin}
     password: ${MYSQL_PASSWORD:admin123}
   jpa:
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
     show-sql: false
@@ -27,10 +27,12 @@ spring:
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
+    ssl:
+      enabled: ${RABBITMQ_SSL_ENABLED:false}
     
 eauction:
   rabbitmq:
-    queue: events
+    queue: ${RABBITMQ_QUEUE:events}
 
 #eureka:
 #  client:
